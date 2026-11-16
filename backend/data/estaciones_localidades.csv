@@ -1,0 +1,21 @@
+estacion_id,nombre,localidad,latitud,longitud,zona
+8213,Centro de Alto Rendimiento,Barrios Unidos,4.658467,-74.083967,Centro
+8215,MinAmbiente,Santa Fe,4.625486,-74.066981,Centro
+31834,Móvil 7ma,Chapinero,4.642431,-74.083967,Centro
+31875,Colina,Suba,4.73725,-74.069444,Norte
+8211,Guaymaral,Suba,4.783756,-74.044183,Norte
+8210,Suba,Suba,4.761247,-74.093461,Norte
+8207,Usaquén,Usaquén,4.71035,-74.030417,Norte
+28203,Bolivia,Engativá,4.735867,-74.125883,Occidente
+31684,Fontibón,Fontibón,4.678242,-74.143819,Occidente
+31873,Jazmín,Puente Aranda,4.6085,-74.114944,Occidente
+8208,Las Ferias,Engativá,4.6907,-74.082483,Occidente
+31876,Móvil Fontibón,Fontibón,4.667694,-74.148861,Occidente
+8216,Puente Aranda,Puente Aranda,4.631767,-74.117483,Occidente
+31874,Ciudad Bolívar,Ciudad Bolívar,4.577806,-74.166278,Sur
+28202,San Cristóbal,San Cristóbal,4.572553,-74.083814,Sur
+8219,Tunal,Tunjuelito,4.576225,-74.130956,Sur
+31841,Usme,Usme,4.532,-74.11706,Sur
+31850,Bosa,Bosa,4.605611,-74.204056,Suroccidente
+8218,Carvajal - Sevillana,Kennedy,4.595617,-74.148583,Suroccidente
+8214,Kennedy,Kennedy,4.62505,-74.161333,Suroccidente
