@@ -59,6 +59,8 @@ const mem = {
 
 let INFO = null;
 const LOCS = () => INFO.localidades.map(l => l.nombre);
+// Devuelve la localidad si existe en los datos actuales; si no, una por defecto
+const locValida = l => LOCS().includes(l) ? l : (LOCS().includes("Kennedy") ? "Kennedy" : LOCS()[0]);
 const opciones = (arr, sel) => arr.map(o => { const [v, t] = Array.isArray(o) ? o : [o, o]; return `<option value="${v}" ${String(v) === String(sel) ? "selected" : ""}>${t}</option>`; }).join("");
 const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
 const fechaLarga = iso => { const [y, m, d] = iso.split("-"); return `${+d} de ${["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"][+m - 1]} de ${y}`; };
@@ -189,12 +191,19 @@ function pSemaforo(v) {
   const min = demo ? window.DEMO_DATA.horario_desde : INFO.desde;
   const st = mem.get("av_sem", { tipo: "localidad", lugar: "Kennedy", fecha: INFO.hasta, perfil: "general" });
   if (demo) st.tipo = "localidad";
+  // Lo recordado puede venir de otros datos: fecha fuera de rango o lugar que ya no existe
+  const enRango = f => /^\d{4}-\d{2}-\d{2}$/.test(f || "") && f >= min && f <= INFO.hasta;
+  const lugares = () => st.tipo === "estacion" ? INFO.estaciones.map(e => String(e.estacion_id)) : LOCS();
+  if (!enRango(st.fecha)) st.fecha = INFO.hasta;
+  if (!["localidad", "estacion"].includes(st.tipo)) st.tipo = "localidad";
+  const estDef = () => lugares().includes("8214") ? "8214" : lugares()[0];
+  if (!lugares().includes(String(st.lugar))) st.lugar = st.tipo === "estacion" ? estDef() : locValida(st.lugar);
   v.innerHTML = `
   <div class="row"><div class="c-12 card"><div class="card-body">
     <div class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));align-items:end">
       <div><label class="f">Consultar por</label><div class="seg" id="tipo"><button data-v="localidad">Localidad</button>${demo ? "" : '<button data-v="estacion">Estación</button>'}</div></div>
       <div><label class="f">Lugar</label><select class="input" id="lugar"></select></div>
-      <div><label class="f">Fecha</label><input class="input" type="date" id="fecha" min="${min}" max="${INFO.hasta}" value="${st.fecha < min ? INFO.hasta : st.fecha}"></div>
+      <div><label class="f">Fecha</label><input class="input" type="date" id="fecha" min="${min}" max="${INFO.hasta}" value="${st.fecha}"></div>
       <div><label class="f">Perfil</label><select class="input" id="perfil">${opciones(Object.entries(INFO.perfiles), st.perfil)}</select></div>
       <div><button class="btn block" id="ver">${ico("semaforo", 'width="16" height="16"')} Ver semáforo</button></div>
     </div>${demo ? `<p class="small muted mt mb0">En la demostración se puede consultar desde el ${min}. Con el servidor se consulta todo el histórico y también por estación.</p>` : ""}
@@ -204,10 +213,12 @@ function pSemaforo(v) {
     $("#lugar").innerHTML = st.tipo === "estacion" ? opciones(INFO.estaciones.map(e => [e.estacion_id, `${e.nombre} (${e.localidad})`]), st.lugar) : opciones(LOCS(), st.lugar);
     $("#tipo").querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.v === st.tipo));
   };
-  $("#tipo").onclick = e => { if (!e.target.dataset.v) return; st.tipo = e.target.dataset.v; st.lugar = st.tipo === "estacion" ? 15 : "Kennedy"; llenarLugar(); };
+  $("#tipo").onclick = e => { if (!e.target.dataset.v) return; st.tipo = e.target.dataset.v; st.lugar = st.tipo === "estacion" ? estDef() : locValida("Kennedy"); llenarLugar(); };
   llenarLugar();
   const ver = async () => {
-    Object.assign(st, { lugar: $("#lugar").value, fecha: $("#fecha").value, perfil: $("#perfil").value }); mem.set("av_sem", st);
+    let f = $("#fecha").value;
+    if (!enRango(f)) { f = f && f > INFO.hasta ? INFO.hasta : (f && f < min ? min : INFO.hasta); $("#fecha").value = f; }
+    Object.assign(st, { lugar: $("#lugar").value, fecha: f, perfil: $("#perfil").value }); mem.set("av_sem", st);
     const res = $("#res"); cargando(res);
     try {
       const d = await API.get("/api/semaforo", { fecha: st.fecha, perfil: st.perfil, ...(st.tipo === "estacion" ? { estacion_id: st.lugar } : { localidad: st.lugar }) });
@@ -217,7 +228,8 @@ function pSemaforo(v) {
           <div class="card-body"><div class="semaforo-wrap">
             <div class="traffic">${["rojo", "amarillo", "verde"].map(c => `<i class="${c} ${s.color === c ? "on" : ""}"></i>`).join("")}</div>
             <div class="lectura" style="flex:1;min-width:200px"><div class="valor">${fmt(d.promedio_24h)}<small> µg/m³</small></div>
-              <span class="etq ${s.color}">${s.etiqueta}</span><p style="margin:0;line-height:1.55">${s.mensaje}</p></div>
+              <span class="etq ${s.color}">${s.etiqueta}</span><p style="margin:0;line-height:1.55">${s.mensaje}</p>
+              ${d.promedio_24h == null ? `<p class="small muted" style="margin:10px 0 0;line-height:1.5">${d.horas_validas ? `Ese día solo hubo ${d.horas_validas} horas medidas.` : "No hay mediciones para ese día."} Prueba otra fecha${st.tipo === "estacion" ? " o consulta por localidad" : ""}: los datos van del ${min} al ${INFO.hasta}.</p>` : ""}</div>
           </div><div id="regla" class="mt"></div></div></div>
         <div class="c-7 card"><div class="card-header"><h5>Hora por hora</h5><div class="sub">Concentración horaria · líneas: OMS (15) y norma (37)</div></div>
           <div class="card-body">${d.horas.length ? '<div id="horas"></div>' : '<div class="empty">No hay mediciones para este día.</div>'}
@@ -241,6 +253,7 @@ function pSemaforo(v) {
 function pCalendario(v) {
   const anios = []; for (let y = +INFO.hasta.slice(0, 4); y >= +INFO.desde.slice(0, 4); y--) anios.push(y);
   const st = mem.get("av_cal", { lugar: "Kennedy", anio: anios[0] });
+  st.lugar = locValida(st.lugar); if (!anios.includes(+st.anio)) st.anio = anios[0];
   v.innerHTML = `<div class="row mb0"><div class="c-12 card">
     <div class="card-header"><h5>Calendario del semáforo</h5><div class="tools">
       <select class="input sm" id="cl">${opciones(LOCS(), st.lugar)}</select><select class="input sm" id="ca">${opciones(anios, st.anio)}</select></div>
@@ -271,6 +284,7 @@ const DIAS_C = ["L", "M", "X", "J", "V", "S", "D"];
 function pMiAire(v) {
   const p = mem.get("av_perfil", { alias: "", casa: "Kennedy", perfil: "general", actividad: "correr",
     rutina: [{ localidad: "Chapinero", tipo: "estudio", hora_inicio: 7, hora_fin: 13, dias: "01234" }, { localidad: "Kennedy", tipo: "ejercicio", hora_inicio: 6, hora_fin: 7, dias: "024" }] });
+  p.casa = locValida(p.casa); (p.rutina || []).forEach(b => { b.localidad = locValida(b.localidad); });
   v.innerHTML = `<div class="row mb0">
     <div class="c-5"><div class="card"><div class="card-header"><h5>Tu rutina</h5><div class="sub">Dinos dónde pasas el día y calculamos el aire que realmente respiras</div></div>
       <div class="card-body"><div class="form-grid">
@@ -370,6 +384,7 @@ function pintarExposicion(res, e, p) {
 // =====================================================================
 function pMejor(v) {
   const st = mem.get("av_mm", { lugar: mem.get("av_perfil", {}).casa || "Kennedy" });
+  st.lugar = locValida(st.lugar);
   v.innerHTML = `<div class="row"><div class="c-12 card"><div class="card-header"><h5>¿A qué hora conviene salir?</h5>
       <div class="tools"><select class="input sm" id="ml">${opciones(LOCS(), st.lugar)}</select></div>
       <div class="sub">Promedio histórico del último año por día de la semana y hora. Los recuadros marcados son las mejores horas entre 5:00 y 21:00.</div></div>
@@ -398,6 +413,7 @@ function pMejor(v) {
 // =====================================================================
 function pAlertas(v) {
   const st = mem.get("av_al", { lugar: mem.get("av_perfil", {}).casa || "Kennedy" });
+  st.lugar = locValida(st.lugar);
   const uid = mem.get("av_uid");
   v.innerHTML = `<div class="row"><div class="c-12 card"><div class="card-header"><h5>Pronóstico de PM2.5</h5>
       <div class="tools"><select class="input sm" id="pl">${opciones(LOCS(), st.lugar)}</select></div>
