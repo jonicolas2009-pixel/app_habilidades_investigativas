@@ -128,7 +128,7 @@ const Demo = (() => {
       if (act.length && ops.length) {
         ops.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
         const [mv, mh] = ops[0], av = prom_(act);
-        if (mh !== ej.hora_inicio && mv < av) sugerencia = { hora_actual: ej.hora_inicio, hora_sugerida: mh, valor_actual: r1(av), valor_sugerido: r1(mv), reduccion_pct: Math.round(100 * (1 - mv / av)), localidad: ej.localidad };
+        if (mh !== ej.hora_inicio && mv <= av * 0.9) sugerencia = { hora_actual: ej.hora_inicio, hora_sugerida: mh, valor_actual: r1(av), valor_sugerido: r1(mv), reduccion_pct: Math.round(100 * (1 - mv / av)), localidad: ej.localidad };
       }
     }
     registrar("exposicion");

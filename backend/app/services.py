@@ -91,6 +91,7 @@ def localidades(con) -> list[dict]:
         SELECT l.localidad_id, l.nombre, l.zona,
                AVG(e.latitud) lat, AVG(e.longitud) lon, COUNT(e.estacion_id) estaciones
         FROM localidad l JOIN estacion e USING(localidad_id)
+        WHERE e.estacion_id IN (SELECT DISTINCT estacion_id FROM promedio_diario)
         GROUP BY l.localidad_id ORDER BY l.nombre""").fetchall()
     return [dict(f) for f in filas]
 
@@ -98,7 +99,9 @@ def localidades(con) -> list[dict]:
 def estaciones(con) -> list[dict]:
     filas = con.execute("""
         SELECT e.estacion_id, e.nombre, e.latitud, e.longitud, l.nombre AS localidad, l.zona
-        FROM estacion e JOIN localidad l USING(localidad_id) ORDER BY e.nombre""").fetchall()
+        FROM estacion e JOIN localidad l USING(localidad_id)
+        WHERE e.estacion_id IN (SELECT DISTINCT estacion_id FROM promedio_diario)
+        ORDER BY e.nombre""").fetchall()
     return [dict(f) for f in filas]
 
 
@@ -398,7 +401,7 @@ def exposicion(con, casa: str, rutina: list[dict], perfil: str = "general",
         if actual and opciones:
             mejor_v, mejor_h = min(opciones)
             act_v = sum(actual) / len(actual)
-            if mejor_h != ej["hora_inicio"] and mejor_v < act_v:
+            if mejor_h != ej["hora_inicio"] and mejor_v <= act_v * 0.9:  # solo si mejora >= 10 %
                 sugerencia = {"hora_actual": ej["hora_inicio"], "hora_sugerida": mejor_h,
                               "valor_actual": round(act_v, 1), "valor_sugerido": round(mejor_v, 1),
                               "reduccion_pct": round(100 * (1 - mejor_v / act_v)),

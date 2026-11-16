@@ -77,8 +77,13 @@ Opción B: **datos reales del IDEAM** (lo que va en la entrega final):
 2. Filtren por Bogotá, PM2.5 y los últimos 3 años, y exporten en **CSV**.
 3. Borren `data/airevisible.db` si existe y ejecuten:
 ```bash
-python scripts/cargar_datos_ideam.py ruta/al/archivo_descargado.csv
+python scripts/cargar_datos_ideam.py ruta/al/archivo_descargado.csv --desde 2024-01-01
 ```
+> **Control de calidad (hallazgo del proyecto).** En el archivo descargado el 15/11/2026, entre 2020 y 2023 varias estaciones
+> (Kennedy, Puente Aranda, Fontibón, Bolivia, Usme, entre otras) reportan valores de 100–250 µg/m³, unas 10 veces lo normal,
+> con saltos abruptos de un mes a otro y todos sin decimales; desde 2024 los valores traen decimales y son coherentes.
+> Por eso el análisis usa **2024–2025**. Sin `--desde`, el script descarta automáticamente los meses-estación con mediana
+> mayor a 60 µg/m³ y los lista en `data/reporte_calidad.csv` (300 meses, todos de 2020–2023).
 El script imprime un **reporte de limpieza** (filas iniciales, tras filtros, tras quitar vacíos/negativos/duplicados), que pueden pegar en el informe.
 Si dice que alguna estación no tiene localidad, agréguenla a `data/estaciones_localidades.csv` y verifiquen ahí las coordenadas, que son aproximadas.
 

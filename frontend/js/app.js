@@ -240,7 +240,7 @@ function pSemaforo(v) {
 // =====================================================================
 function pCalendario(v) {
   const anios = []; for (let y = +INFO.hasta.slice(0, 4); y >= +INFO.desde.slice(0, 4); y--) anios.push(y);
-  const st = mem.get("av_cal", { lugar: "Kennedy", anio: anios[1] || anios[0] });
+  const st = mem.get("av_cal", { lugar: "Kennedy", anio: anios[0] });
   v.innerHTML = `<div class="row mb0"><div class="c-12 card">
     <div class="card-header"><h5>Calendario del semáforo</h5><div class="tools">
       <select class="input sm" id="cl">${opciones(LOCS(), st.lugar)}</select><select class="input sm" id="ca">${opciones(anios, st.anio)}</select></div>
@@ -270,7 +270,7 @@ const TIPOS = [["estudio", "Estudio"], ["trabajo", "Trabajo"], ["ejercicio", "Ej
 const DIAS_C = ["L", "M", "X", "J", "V", "S", "D"];
 function pMiAire(v) {
   const p = mem.get("av_perfil", { alias: "", casa: "Kennedy", perfil: "general", actividad: "correr",
-    rutina: [{ localidad: "Chapinero", tipo: "estudio", hora_inicio: 7, hora_fin: 13, dias: "01234" }, { localidad: "Kennedy", tipo: "ejercicio", hora_inicio: 18, hora_fin: 19, dias: "024" }] });
+    rutina: [{ localidad: "Chapinero", tipo: "estudio", hora_inicio: 7, hora_fin: 13, dias: "01234" }, { localidad: "Kennedy", tipo: "ejercicio", hora_inicio: 6, hora_fin: 7, dias: "024" }] });
   v.innerHTML = `<div class="row mb0">
     <div class="c-5"><div class="card"><div class="card-header"><h5>Tu rutina</h5><div class="sub">Dinos dónde pasas el día y calculamos el aire que realmente respiras</div></div>
       <div class="card-body"><div class="form-grid">
@@ -473,8 +473,8 @@ async function pMetodologia(v) {
   try { stats = await API.get("/api/estadisticas"); } catch { /* opcional */ }
   v.innerHTML = `
   <div class="row"><div class="c-12 card"><div class="card-header"><h5>Cómo funciona</h5></div><div class="card-body"><div class="flow">
-    <div class="paso"><span class="k">ETAPA 1</span><b>Recolección</b>CSV del IDEAM (datos.gov.co) filtrado por Bogotá, PM2.5 y 3 años.</div>
-    <div class="paso"><span class="k">ETAPA 2</span><b>Limpieza</b>Sin vacíos, negativos ni duplicados. Estación → localidad. Promedio diario solo con ≥ ${INFO.horas_minimas} h.</div>
+    <div class="paso"><span class="k">ETAPA 1</span><b>Recolección</b>CSV del IDEAM (datos.gov.co) filtrado por Bogotá y PM2.5.</div>
+    <div class="paso"><span class="k">ETAPA 2</span><b>Limpieza y calidad</b>Sin vacíos, negativos ni duplicados. Control de calidad: 2020–2023 descartado por errores de escala. Promedio diario solo con ≥ ${INFO.horas_minimas} h.</div>
     <div class="paso"><span class="k">ETAPA 3</span><b>Base de datos</b>SQL con 12 tablas: localidad, estación, medición, límites, usuario, rutina, consulta, pronóstico…</div>
     <div class="paso"><span class="k">ETAPA 4</span><b>Servidor + app</b>API REST (FastAPI) con los cálculos, este panel web y alertas por Telegram.</div>
     <div class="paso"><span class="k">ETAPA 5</span><b>Validación</b>Pruebas de cálculo a mano, pruebas con usuarios y validación del pronóstico.</div>
@@ -493,7 +493,7 @@ async function pMetodologia(v) {
   </div>
   <div class="row mb0"><div class="c-12 card"><div class="card-header"><h5>Fuentes y avisos</h5></div><div class="card-body" style="line-height:1.65">
     ${INFO.datos_simulados ? `<div class="alert-msg" style="margin-bottom:16px"><b>Datos simulados.</b> La versión actual usa un archivo de prueba con el mismo formato del IDEAM para validar el funcionamiento. Las cifras no son resultados reales; se reemplazan cargando el CSV oficial con <code>python scripts/cargar_datos_ideam.py archivo.csv</code>.</div>` : ""}
-    <b>Datos:</b> IDEAM, «Calidad del Aire en Colombia», Portal Nacional de Datos Abiertos (g4t8-zkc3).<br>
+    <b>Datos:</b> IDEAM, «Calidad del Aire en Colombia», Portal Nacional de Datos Abiertos (g4t8-zkc3), descargado el 15 de noviembre de 2026. Se usan 2024 y 2025: en 2020–2023 varias estaciones reportan valores unas 10 veces más altos de lo físicamente posible, con saltos abruptos y sin decimales, por lo que se excluyeron (detalle en data/reporte_calidad.csv).<br>
     <b>Umbrales:</b> OMS (2021), Directrices mundiales de calidad del aire · MinAmbiente, Resolución 2254 de 2017.<br>
     <b>Pronóstico:</b> Open-Meteo Air Quality API (modelo CAMS, Copernicus).<br>
     <b>Equivalencia en cigarrillos:</b> aproximación divulgativa de Berkeley Earth (22 µg/m³ de PM2.5 ≈ 1 cigarrillo al día). Es una comparación orientativa, no un diagnóstico.<br>

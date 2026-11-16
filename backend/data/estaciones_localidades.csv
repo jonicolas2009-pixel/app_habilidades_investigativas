@@ -1,21 +1,21 @@
 estacion_id,nombre,localidad,latitud,longitud,zona
-1,Guaymaral,Suba,4.7836,-74.0441,Norte
-2,Usaquén,Usaquén,4.7103,-74.0304,Norte
-3,Suba,Suba,4.7612,-74.0935,Norte
-4,Colina,Suba,4.7372,-74.0694,Norte
-5,Las Ferias,Engativá,4.6907,-74.0827,Occidente
-6,Bolivia,Engativá,4.7357,-74.1259,Occidente
-7,Centro de Alto Rendimiento,Barrios Unidos,4.6584,-74.0840,Centro
-8,Móvil 7ma,Chapinero,4.6425,-74.0836,Centro
-9,MinAmbiente,Santa Fe,4.6253,-74.0670,Centro
-10,Fontibón,Fontibón,4.6703,-74.1415,Occidente
-11,Móvil Fontibón,Fontibón,4.6681,-74.1484,Occidente
-12,Puente Aranda,Puente Aranda,4.6318,-74.1175,Occidente
-13,Jazmín,Puente Aranda,4.6086,-74.1149,Occidente
-14,Kennedy,Kennedy,4.6250,-74.1612,Suroccidente
-15,Carvajal - Sevillana,Kennedy,4.5958,-74.1485,Suroccidente
-16,Bosa,Bosa,4.6056,-74.2049,Suroccidente
-17,Tunal,Tunjuelito,4.5762,-74.1308,Sur
-18,San Cristóbal,San Cristóbal,4.5725,-74.0838,Sur
-19,Ciudad Bolívar,Ciudad Bolívar,4.5779,-74.1660,Sur
-20,Usme,Usme,4.5320,-74.1170,Sur
+8213,Centro de Alto Rendimiento,Barrios Unidos,4.658467,-74.083967,Centro
+8215,MinAmbiente,Santa Fe,4.625486,-74.066981,Centro
+31834,Móvil 7ma,Chapinero,4.642431,-74.083967,Centro
+31875,Colina,Suba,4.73725,-74.069444,Norte
+8211,Guaymaral,Suba,4.783756,-74.044183,Norte
+8210,Suba,Suba,4.761247,-74.093461,Norte
+8207,Usaquén,Usaquén,4.71035,-74.030417,Norte
+28203,Bolivia,Engativá,4.735867,-74.125883,Occidente
+31684,Fontibón,Fontibón,4.678242,-74.143819,Occidente
+31873,Jazmín,Puente Aranda,4.6085,-74.114944,Occidente
+8208,Las Ferias,Engativá,4.6907,-74.082483,Occidente
+31876,Móvil Fontibón,Fontibón,4.667694,-74.148861,Occidente
+8216,Puente Aranda,Puente Aranda,4.631767,-74.117483,Occidente
+31874,Ciudad Bolívar,Ciudad Bolívar,4.577806,-74.166278,Sur
+28202,San Cristóbal,San Cristóbal,4.572553,-74.083814,Sur
+8219,Tunal,Tunjuelito,4.576225,-74.130956,Sur
+31841,Usme,Usme,4.532,-74.11706,Sur
+31850,Bosa,Bosa,4.605611,-74.204056,Suroccidente
+8218,Carvajal - Sevillana,Kennedy,4.595617,-74.148583,Suroccidente
+8214,Kennedy,Kennedy,4.62505,-74.161333,Suroccidente
