@@ -1,0 +1,21 @@
+estacion_id,nombre,localidad,latitud,longitud,zona
+1,Guaymaral,Suba,4.7836,-74.0441,Norte
+2,Usaquén,Usaquén,4.7103,-74.0304,Norte
+3,Suba,Suba,4.7612,-74.0935,Norte
+4,Colina,Suba,4.7372,-74.0694,Norte
+5,Las Ferias,Engativá,4.6907,-74.0827,Occidente
+6,Bolivia,Engativá,4.7357,-74.1259,Occidente
+7,Centro de Alto Rendimiento,Barrios Unidos,4.6584,-74.0840,Centro
+8,Móvil 7ma,Chapinero,4.6425,-74.0836,Centro
+9,MinAmbiente,Santa Fe,4.6253,-74.0670,Centro
+10,Fontibón,Fontibón,4.6703,-74.1415,Occidente
+11,Móvil Fontibón,Fontibón,4.6681,-74.1484,Occidente
+12,Puente Aranda,Puente Aranda,4.6318,-74.1175,Occidente
+13,Jazmín,Puente Aranda,4.6086,-74.1149,Occidente
+14,Kennedy,Kennedy,4.6250,-74.1612,Suroccidente
+15,Carvajal - Sevillana,Kennedy,4.5958,-74.1485,Suroccidente
+16,Bosa,Bosa,4.6056,-74.2049,Suroccidente
+17,Tunal,Tunjuelito,4.5762,-74.1308,Sur
+18,San Cristóbal,San Cristóbal,4.5725,-74.0838,Sur
+19,Ciudad Bolívar,Ciudad Bolívar,4.5779,-74.1660,Sur
+20,Usme,Usme,4.5320,-74.1170,Sur
